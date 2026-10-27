@@ -9,14 +9,16 @@ import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 
 public class Gui extends Application {
 
-	public static final int size = 30; 
-	public static final int scene_height = size * 20 + 50;
-	public static final int scene_width = size * 20 + 200;
+	public static final int mapWidth = MapLayout.board[0].length();
+	public static final int mapHeight = MapLayout.board.length;
+	public static final int tileSize = 30;
+
+	public static final int scene_height = tileSize * mapHeight + 50;
+	public static final int scene_width = tileSize * mapWidth + 200;
 
 	public static Image image_floor;
 	public static Image image_wall;
@@ -24,7 +26,7 @@ public class Gui extends Application {
 
 	
 
-	private static Label[][] fields;
+	private static Label[][] tiles;
 	private TextArea scoreList;
 	
 
@@ -57,29 +59,45 @@ public class Gui extends Application {
 			
 			GridPane boardGrid = new GridPane();
 
-			image_wall  = new Image(getClass().getResourceAsStream("/images/wall4.png"),size,size,false,false);
-			image_floor = new Image(getClass().getResourceAsStream("/images/floor1.png"),size,size,false,false);
+			image_wall  = new Image(getClass().getResourceAsStream("/images/wall4.png"), tileSize, tileSize,false,false);
+			image_floor = new Image(getClass().getResourceAsStream("/images/floor1.png"), tileSize, tileSize,false,false);
 
-			hero_right  = new Image(getClass().getResourceAsStream("/images/heroRight.png"),size,size,false,false);
-			hero_left   = new Image(getClass().getResourceAsStream("/images/heroLeft.png"),size,size,false,false);
-			hero_up     = new Image(getClass().getResourceAsStream("/images/heroUp.png"),size,size,false,false);
-			hero_down   = new Image(getClass().getResourceAsStream("/images/heroDown.png"),size,size,false,false);
+			hero_right  = new Image(getClass().getResourceAsStream("/images/heroRight.png"), tileSize, tileSize,false,false);
+			hero_left   = new Image(getClass().getResourceAsStream("/images/heroLeft.png"), tileSize, tileSize,false,false);
+			hero_up     = new Image(getClass().getResourceAsStream("/images/heroUp.png"), tileSize, tileSize,false,false);
+			hero_down   = new Image(getClass().getResourceAsStream("/images/heroDown.png"), tileSize, tileSize,false,false);
 
-			fields = new Label[20][20];
-			for (int j=0; j<20; j++) {
-				for (int i=0; i<20; i++) {
-					switch (Generel.board[j].charAt(i)) {
-					case 'w':
-						fields[i][j] = new Label("", new ImageView(image_wall));
-						break;
-					case ' ':					
-						fields[i][j] = new Label("", new ImageView(image_floor));
-						break;
-					default: throw new Exception("Illegal field value: "+Generel.board[j].charAt(i) );
+			tiles = new Label[mapWidth][mapHeight];
+
+			for (int row = 0; row < mapHeight; row++) {
+				for (int column = 0; column < mapWidth; column++) {
+					switch (MapLayout.tileMap[column][row].getType()) {
+						case WALL:
+							tiles[column][row] = new Label("", new ImageView(image_wall));
+							break;
+						case FLOOR:
+							tiles[column][row] = new Label("", new ImageView(image_floor));
+							break;
+						default: throw new Exception("Illegal field value: " + MapLayout.tileMap[column][row].getType() );
 					}
-					boardGrid.add(fields[i][j], i, j);
+					boardGrid.add(tiles[column][row], column, row);
 				}
 			}
+
+//			for (int row = 0; row < mapHeight; row++) {
+//				for (int column = 0; column < mapWidth; column++) {
+//					switch (MapLayout.board[row].charAt(column)) {
+//					case 'w':
+//						tiles[column][row] = new Label("", new ImageView(image_wall));
+//						break;
+//					case ' ':
+//						tiles[column][row] = new Label("", new ImageView(image_floor));
+//						break;
+//					default: throw new Exception("Illegal field value: "+ MapLayout.board[row].charAt(column) );
+//					}
+//					boardGrid.add(tiles[column][row], column, row);
+//				}
+//			}
 			scoreList.setEditable(false);
 			
 			
@@ -105,7 +123,7 @@ public class Gui extends Application {
 			
             // Putting default players on screen
 			for (int i=0;i<GameLogic.players.size();i++) {
-			  fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
+			  tiles[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
 			}
 			scoreList.setText(getScoreList());
 		} catch(Exception e) {
@@ -115,7 +133,7 @@ public class Gui extends Application {
 	
 	public static void removePlayerOnScreen(pair oldpos) {
 		Platform.runLater(() -> {
-			fields[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(image_floor));
+			tiles[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(image_floor));
 			});
 	}
 	
@@ -124,16 +142,16 @@ public class Gui extends Application {
 			int newx = newpos.getX();
 			int newy = newpos.getY();
 			if (direction.equals("right")) {
-				fields[newx][newy].setGraphic(new ImageView(hero_right));
+				tiles[newx][newy].setGraphic(new ImageView(hero_right));
 			};
 			if (direction.equals("left")) {
-				fields[newx][newy].setGraphic(new ImageView(hero_left));
+				tiles[newx][newy].setGraphic(new ImageView(hero_left));
 			};
 			if (direction.equals("up")) {
-				fields[newx][newy].setGraphic(new ImageView(hero_up));
+				tiles[newx][newy].setGraphic(new ImageView(hero_up));
 			};
 			if (direction.equals("down")) {
-				fields[newx][newy].setGraphic(new ImageView(hero_down));
+				tiles[newx][newy].setGraphic(new ImageView(hero_down));
 			};
 			});
 	}
