@@ -32,7 +32,7 @@ public static List<Player> players = new ArrayList<Player>();
 			Random r = new Random();
 			x = Math.abs(r.nextInt()%18) +1;
 			y = Math.abs(r.nextInt()%18) +1;
-			if (Generel.board[y].charAt(x)==' ') // er det gulv ?
+			if (MapLayout.board[y].charAt(x)==' ') // er det gulv ?
 			{
 				foundfreepos = true;
 				for (Player p: players) {
@@ -51,7 +51,7 @@ public static List<Player> players = new ArrayList<Player>();
 		me.direction = direction;
 		int x = me.getXpos(),y = me.getYpos();
 
-		if (Generel.board[y+delta_y].charAt(x+delta_x)=='w') {
+		if (MapLayout.board[y+delta_y].charAt(x+delta_x)=='w') {
 			me.addPoints(-1);
 		} 
 		else {
