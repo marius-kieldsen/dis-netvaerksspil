@@ -11,18 +11,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public class Gui extends Application {
 
-	public static final int mapWidth = MapLayout.board[0].length();
-	public static final int mapHeight = MapLayout.board.length;
-	public static final int tileSize = 30;
+	public static final int TILE_SIZE = 30;
+	public static final int SCENE_HEIGHT = TILE_SIZE * GameMap.MAP_HEIGHT + 50;
+	public static final int SCENE_WIDTH = TILE_SIZE * GameMap.MAP_WIDTH + 200;
 
-	public static final int scene_height = tileSize * mapHeight + 50;
-	public static final int scene_width = tileSize * mapWidth + 200;
+	public static Image imageFloor;
+	public static Image imageWall;
 
-	public static Image image_floor;
-	public static Image image_wall;
-	public static Image hero_right,hero_left,hero_up,hero_down;
+	private static final Map<Direction, Image> heroImages = new EnumMap<>(Direction.class);
 
 	private static Label[][] tiles;
 	private TextArea scoreList;
@@ -40,8 +41,6 @@ public class Gui extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			
-			
 			GridPane grid = new GridPane();
 			grid.setHgap(10);
 			grid.setVgap(10);
@@ -57,27 +56,23 @@ public class Gui extends Application {
 			
 			GridPane boardGrid = new GridPane();
 
-			image_wall  = new Image(getClass().getResourceAsStream("/images/wall4.png"), tileSize, tileSize,false,false);
-			image_floor = new Image(getClass().getResourceAsStream("/images/floor1.png"), tileSize, tileSize,false,false);
+			imageWall  = loadImage("/images/wall4.png");
+			imageFloor = loadImage("/images/floor1.png");
 
-			hero_right  = new Image(getClass().getResourceAsStream("/images/heroRight.png"), tileSize, tileSize,false,false);
-			hero_left   = new Image(getClass().getResourceAsStream("/images/heroLeft.png"), tileSize, tileSize,false,false);
-			hero_up     = new Image(getClass().getResourceAsStream("/images/heroUp.png"), tileSize, tileSize,false,false);
-			hero_down   = new Image(getClass().getResourceAsStream("/images/heroDown.png"), tileSize, tileSize,false,false);
+			heroImages.put(Direction.RIGHT, loadImage("/images/heroRight.png"));
+			heroImages.put(Direction.LEFT, loadImage("/images/heroLeft.png"));
+			heroImages.put(Direction.UP, loadImage("/images/heroUp.png"));
+			heroImages.put(Direction.DOWN, loadImage("/images/heroDown.png"));
 
-			tiles = new Label[mapWidth][mapHeight];
 
-			for (int row = 0; row < mapHeight; row++) {
-				for (int column = 0; column < mapWidth; column++) {
-					switch (MapLayout.tileMap[column][row].getType()) {
-						case WALL:
-							tiles[column][row] = new Label("", new ImageView(image_wall));
-							break;
-						case FLOOR:
-							tiles[column][row] = new Label("", new ImageView(image_floor));
-							break;
-						default: throw new Exception("Illegal field value: " + MapLayout.tileMap[column][row].getType() );
-					}
+			tiles = new Label[GameMap.MAP_WIDTH][GameMap.MAP_HEIGHT];
+			for (int row = 0; row < GameMap.MAP_HEIGHT; row++) {
+				for (int column = 0; column < GameMap.MAP_WIDTH; column++) {
+					Image img = switch (GameMap.tileMap[column][row].getType()) {
+						case WALL -> imageWall;
+						case FLOOR -> imageFloor;
+					};
+					tiles[column][row] = new Label("", new ImageView(img));
 					boardGrid.add(tiles[column][row], column, row);
 				}
 			}
@@ -89,24 +84,24 @@ public class Gui extends Application {
 			grid.add(boardGrid,  0, 1);
 			grid.add(scoreList,  1, 1);
 						
-			Scene scene = new Scene(grid,scene_width,scene_height);
+			Scene scene = new Scene(grid, SCENE_WIDTH, SCENE_HEIGHT);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
 			scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 				switch (event.getCode()) {
-				case UP:    playerMoved(0,-1,"up");    break;
-				case DOWN:  playerMoved(0,+1,"down");  break;
-				case LEFT:  playerMoved(-1,0,"left");  break;
-				case RIGHT: playerMoved(+1,0,"right"); break;
-				case ESCAPE:System.exit(0); 
-				default: break;
+				case UP     -> playerMoved(Direction.UP);
+				case DOWN   -> playerMoved(Direction.DOWN);
+				case LEFT   -> playerMoved(Direction.LEFT);
+				case RIGHT  -> playerMoved(Direction.RIGHT);
+				case ESCAPE -> System.exit(0);
+				default  	-> { }
 				}
 			});
 			
             // Putting default players on screen
-			for (int i=0;i<GameLogic.players.size();i++) {
-			  tiles[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
+			for (Player p : GameLogic.players) {
+				placePlayerOnScreen(p.getLocation(), p.getDirection());
 			}
 			scoreList.setText(getScoreList());
 		} catch(Exception e) {
@@ -114,47 +109,29 @@ public class Gui extends Application {
 		}
 	}
 	
-	public static void removePlayerOnScreen(pair oldpos) {
+	public static void removePlayerOnScreen(Tile oldpos) {
 		Platform.runLater(() -> {
-			tiles[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(image_floor));
+			tiles[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(imageFloor));
+		});
+	}
+	
+	public static void placePlayerOnScreen(Tile newpos, Direction direction) {
+		Platform.runLater(() -> {
+			tiles[newpos.getX()][newpos.getY()].setGraphic(new ImageView(heroImages.get(direction)));
 			});
 	}
 	
-	public static void placePlayerOnScreen(pair newpos,String direction) {
-		Platform.runLater(() -> {
-			int newx = newpos.getX();
-			int newy = newpos.getY();
-			if (direction.equals("right")) {
-				tiles[newx][newy].setGraphic(new ImageView(hero_right));
-			};
-			if (direction.equals("left")) {
-				tiles[newx][newy].setGraphic(new ImageView(hero_left));
-			};
-			if (direction.equals("up")) {
-				tiles[newx][newy].setGraphic(new ImageView(hero_up));
-			};
-			if (direction.equals("down")) {
-				tiles[newx][newy].setGraphic(new ImageView(hero_down));
-			};
-			});
-	}
-	
-	public static void movePlayerOnScreen(pair oldpos,pair newpos,String direction)
-	{
+	public static void movePlayerOnScreen(Tile oldpos, Tile newpos, Direction direction) {
 		removePlayerOnScreen(oldpos);
 		placePlayerOnScreen(newpos,direction);
 	}
 	
-
-	
-	public void updateScoreTable()
-	{
-		Platform.runLater(() -> {
-			scoreList.setText(getScoreList());
-			});
+	public void updateScoreTable() {
+		Platform.runLater(() -> scoreList.setText(getScoreList()));
 	}
-	public void playerMoved(int delta_x, int delta_y, String direction) {
-		GameLogic.updatePlayer(App.me,delta_x,delta_y,direction);
+
+	public void playerMoved(Direction direction) {
+		GameLogic.updatePlayer(App.me,direction);
 		updateScoreTable();
 	}
 	
@@ -166,8 +143,8 @@ public class Gui extends Application {
 		return b.toString();
 	}
 
-
-
-	
+	private Image loadImage(String path) {
+		return new Image(getClass().getResourceAsStream(path), TILE_SIZE, TILE_SIZE, false, false);
+	}
 }
 
