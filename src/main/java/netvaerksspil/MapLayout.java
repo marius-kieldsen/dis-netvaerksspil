@@ -31,6 +31,10 @@ public class MapLayout {
 	public static final int mapHeight = board.length;
 	public static final Tile[][] tileMap = new Tile[mapWidth][mapHeight];
 
+	static {
+		buildMap();
+	}
+
 	public static void buildMap() {
 		for (int row = 0; row < mapHeight; row++) {
 			for (int column = 0; column < mapWidth; column++) {
