@@ -49,7 +49,7 @@ public class ServerThread extends Thread{
 				} else {
 					input = "";
 				}
-				Thread.sleep(1);
+				Thread.sleep(10);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
