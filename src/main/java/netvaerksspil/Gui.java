@@ -24,8 +24,6 @@ public class Gui extends Application {
 	public static Image image_wall;
 	public static Image hero_right,hero_left,hero_up,hero_down;
 
-	
-
 	private static Label[][] tiles;
 	private TextArea scoreList;
 	
