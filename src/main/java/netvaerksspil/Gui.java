@@ -121,13 +121,13 @@ public class Gui extends Application {
 
 	public static void removePlayerOnScreen(Tile tile) {
 		Platform.runLater(() -> {
-			tiles[tile.getX()][tile.getY()].setGraphic(load);
+			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(imageFloor));
 		});
 	}
 
 	public static void placePlayerOnScreen(Tile tile,Direction direction) {
 		Platform.runLater(() -> {
-			tiles[tile.getX()][tile.getY()].setGraphic(heroImages.get(direction));
+			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(heroImages.get(direction)));
 		});
 	}
 
