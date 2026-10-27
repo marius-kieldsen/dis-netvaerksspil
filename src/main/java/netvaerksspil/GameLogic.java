@@ -4,88 +4,68 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
-
 public class GameLogic {
-public static List<Player> players = new ArrayList<Player>();	
-	//public static netvaerksspil.Player me;
-	
-	
+	public static List<Player> players = new ArrayList<Player>();
+	private static final Random RANDOM = new Random();
+
 	public static Player makePlayers(String name) {
-		pair p=getRandomFreePosition();
-		Player me = new Player(name,p,"up");
-		players.add(me);
-		p=getRandomFreePosition();
-		Player harry = new Player("Kaj",p,"up");
-		players.add(harry);
-		return me;
+		Player playerOne = new Player(name, getRandomFreeTile(), Direction.UP);
+		players.add(playerOne);
+
+		Player playerTwo = new Player("Kaj",getRandomFreeTile(),Direction.UP);
+		players.add(playerTwo);
+		return playerOne;
 	}
-	
-	public static pair getRandomFreePosition()
-	// finds a random new position which is not wall 
-	// and not occupied by other players 
-	{
-		int x = 1;
-		int y = 1;
-		boolean foundfreepos = false;
-		while  (!foundfreepos) {
-			Random r = new Random();
-			x = Math.abs(r.nextInt()%18) +1;
-			y = Math.abs(r.nextInt()%18) +1;
-			if (MapLayout.board[y].charAt(x)==' ') // er det gulv ?
-			{
-				foundfreepos = true;
-				for (Player p: players) {
-					if (p.getXpos()==x && p.getYpos()==y) //pladsen optaget af en anden 
-						foundfreepos = false;
-				}
-				
+
+	// finds a random new position which is not wall
+	// and not occupied by other players
+	public static Tile getRandomFreeTile() {
+		while (true) {
+			int x = 1 + RANDOM.nextInt(GameMap.MAP_WIDTH - 2);
+			int y = 1 + RANDOM.nextInt(GameMap.MAP_HEIGHT - 2);
+			Tile t = GameMap.tileMap[x][y];
+			if (t.getType() == TileType.FLOOR && getPlayerAt(t) == null) {
+				return t;
 			}
 		}
-		pair p = new pair(x,y);
-		return p;
 	}
 	
-	public static void updatePlayer(Player me,int delta_x, int delta_y, String direction)
-	{
-		me.direction = direction;
-		int x = me.getXpos(),y = me.getYpos();
+	public static void updatePlayer(Player player, Direction direction) {
+		player.setDirection(direction);
 
-		if (MapLayout.board[y+delta_y].charAt(x+delta_x)=='w') {
-			me.addPoints(-1);
-		} 
-		else {
-			// collision detection
-			Player p = getPlayerAt(x+delta_x,y+delta_y);
-			if (p!=null) {
-              me.addPoints(10);
-              //update the other player
-              p.addPoints(-10);
-              pair pa = getRandomFreePosition();
-              p.setLocation(pa);
-              pair oldpos = new pair(x+delta_x,y+delta_y);
-              Gui.movePlayerOnScreen(oldpos,pa,p.direction);
-			} else 
-				me.addPoints(1);
-			pair oldpos = me.getLocation();
-			pair newpos = new pair(x+delta_x,y+delta_y); 
-			Gui.movePlayerOnScreen(oldpos,newpos,direction);
-			me.setLocation(newpos);
+		Tile oldLocation = player.getLocation();
+		Tile newLocation = GameMap.tileMap[oldLocation.getX() + direction.getDx()]
+										  [oldLocation.getY() + direction.getDy()];
+
+		// collision detection
+		if (newLocation.getType() == TileType.WALL) {
+			player.addPoints(-1);
+			Gui.placePlayerOnScreen(oldLocation, direction);
+			return;
 		}
-		
-		
+
+		Player otherPlayer = getPlayerAt(newLocation);
+			if (otherPlayer != null) {
+              player.addPoints(10);
+              otherPlayer.addPoints(-10);
+              Tile respawn = getRandomFreeTile();
+              otherPlayer.setLocation(respawn);
+              Gui.movePlayerOnScreen(newLocation,respawn,otherPlayer.getDirection());
+			} else {
+				player.addPoints(1);
+			}
+
+			player.setLocation(newLocation);
+			newLocation.claim(player);
+			Gui.movePlayerOnScreen(oldLocation, newLocation, direction);
 	}
 	
-	public static Player getPlayerAt(int x, int y) {
+	public static Player getPlayerAt(Tile tile) {
 		for (Player p : players) {
-			if (p.getXpos()==x && p.getYpos()==y) {
+			if (p.getLocation() == tile) {
 				return p;
 			}
 		}
 		return null;
 	}
-	
-	
-	
-
 }
