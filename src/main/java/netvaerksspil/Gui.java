@@ -81,21 +81,6 @@ public class Gui extends Application {
 					boardGrid.add(tiles[column][row], column, row);
 				}
 			}
-
-//			for (int row = 0; row < mapHeight; row++) {
-//				for (int column = 0; column < mapWidth; column++) {
-//					switch (MapLayout.board[row].charAt(column)) {
-//					case 'w':
-//						tiles[column][row] = new Label("", new ImageView(image_wall));
-//						break;
-//					case ' ':
-//						tiles[column][row] = new Label("", new ImageView(image_floor));
-//						break;
-//					default: throw new Exception("Illegal field value: "+ MapLayout.board[row].charAt(column) );
-//					}
-//					boardGrid.add(tiles[column][row], column, row);
-//				}
-//			}
 			scoreList.setEditable(false);
 			
 			
