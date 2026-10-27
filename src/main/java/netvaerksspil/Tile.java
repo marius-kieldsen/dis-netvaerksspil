@@ -12,16 +12,28 @@ public class Tile {
         this.owner = null;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public TileType getType() {
+        return type;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
     public void claim(Player p) {
         owner = p;
     }
 
     public boolean isClaimed() {
         return owner != null;
-    }
-
-    public Player getOwner() {
-        return owner;
     }
 
 
