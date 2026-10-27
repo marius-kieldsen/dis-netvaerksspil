@@ -7,16 +7,20 @@ public class Player {
 	private Direction direction;
 	private int point;
 
-	public Player(String name, Tile location, Direction direction) {
+	public Player(String name, int points, Tile location, Direction direction) {
 		this.name = name;
         this.location = location;
 		this.direction = direction;
-		this.point = 0;
-	};
+		this.point = points;
+	}
 
 //	public PlayerColor getColor() {
 //		return color;
 //	}
+
+	public String getName() { return name; }
+
+	public int getPoint() { return point; }
 
 	public Tile getLocation() {
 		return this.location;
@@ -41,4 +45,6 @@ public class Player {
 	public String toString() {
 		return name+":   "+point;
 	}
+
+
 }
