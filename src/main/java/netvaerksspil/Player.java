@@ -12,7 +12,7 @@ public class Player {
         this.location = location;
 		this.direction = direction;
 		this.point = 0;
-	};
+	}
 
 //	public PlayerColor getColor() {
 //		return color;
