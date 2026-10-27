@@ -1,47 +1,43 @@
 package netvaerksspil;
 
 public class Player {
-	String name;
-	pair location;
-	int point;
-	String direction;
+	private final String name;
+//	private final PlayerColor color;
+	private Tile location;
+	private Direction direction;
+	private int point;
 
-	public Player(String name, pair loc, String direction) {
+	public Player(String name, Tile location, Direction direction) {
 		this.name = name;
-		this.location = loc;
+        this.location = location;
 		this.direction = direction;
 		this.point = 0;
 	};
-	
-	public pair getLocation() {
+
+//	public PlayerColor getColor() {
+//		return color;
+//	}
+
+	public Tile getLocation() {
 		return this.location;
 	}
 
-	public void setLocation(pair p) {
-		this.location=p;
+	public void setLocation(Tile tile) {
+		this.location = tile;
 	}
 
-	public int getXpos() {
-		return location.x;
-	}
-	public void setXpos(int xpos) {
-		this.location.x = xpos;
-	}
-	public int getYpos() {
-		return location.y;
-	}
-	public void setYpos(int ypos) {
-		this.location.y = ypos;
-	}
-	public String getDirection() {
+	public Direction getDirection() {
 		return direction;
 	}
-	public void setDirection(String direction) {
+
+	public void setDirection(Direction direction) {
 		this.direction = direction;
 	}
+
 	public void addPoints(int p) {
 		point+=p;
 	}
+
 	public String toString() {
 		return name+":   "+point;
 	}
