@@ -38,9 +38,7 @@ public class Player {
 	}
 
 	public void resetClaimedTiles() {
-		for (Tile tile : claimedTiles) {
-			removeTile(tile);
-		}
+		claimedTiles.clear();
 	}
 
 	public HashSet<Tile> getClaimedTiles() {
