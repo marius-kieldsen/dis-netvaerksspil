@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ public class Gui extends Application {
 
 	private static Label[][] tiles;
 	private static TextArea scoreList;
-	
 
+	private static List<Player> players = new ArrayList<>();
 
 	
 	// -------------------------------------------
@@ -114,6 +115,27 @@ public class Gui extends Application {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	public static void renderNew(List<Player> newPlayers) {
+		Platform.runLater(() -> {
+			for (Player old : players) {
+				Gui.removePlayerOnScreen(old.getLocation());
+				Gui.resetTiles();
+			}
+
+			for (Player p : newPlayers) {
+				Gui.placePlayerOnScreen(p.getLocation(), p.getDirection());
+				for (Tile tile : p.getClaimedTiles()) {
+					Gui.updateTileColor(tile.getX(), tile.getY(), p.getColor().getColor());
+				}
+			};
+
+			Gui.updateScoreTable(newPlayers);
+
+			players = newPlayers;
+		});
 	}
 
 	public static void updateTileColor(int column, int row, int tilecolor) {
