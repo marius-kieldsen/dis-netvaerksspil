@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InputThread extends Thread {
     private BufferedReader inFromServer = null;
-    List<Player> oldPlayers = new ArrayList<>();
+    List<Player> newPlayers = new ArrayList<>();
 
     public InputThread(BufferedReader inFromServer) {
         this.inFromServer = inFromServer;
@@ -23,11 +23,10 @@ public class InputThread extends Thread {
                         return;
                     }
 
-                    List<Player> newPlayers = DataFormatter.parseData(input);
-
-                    for (Player old : oldPlayers) {
+                    for (Player old : newPlayers) {
                         Gui.removePlayerOnScreen(old.getLocation());
                     }
+                    newPlayers = DataFormatter.parseData(input);
 
                     for (Player p : newPlayers) {
                         Gui.placePlayerOnScreen(p.getLocation(), p.getDirection());
@@ -37,8 +36,6 @@ public class InputThread extends Thread {
                     };
 
                     Gui.updateScoreTable(newPlayers);
-
-                    oldPlayers = newPlayers;
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

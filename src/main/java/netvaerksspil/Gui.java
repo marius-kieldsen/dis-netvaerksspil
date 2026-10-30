@@ -116,22 +116,17 @@ public class Gui extends Application {
 	}
 
 	public static void updateTileColor(int column, int row, int tilecolor) {
-		ImageView view = (ImageView) tiles[column][row].getGraphic();
-//		Player owner = GameMap.tileMap[column][row].getOwner();
-//
-//		if (owner == null) {
-//			view.setEffect(null);
-//			return;
-//		}
 
-//		int rgb = owner.getColor().getColor();
-		Image img = view.getImage();
+		Platform.runLater(() -> {
+			ImageView view = (ImageView) tiles[column][row].getGraphic();
+			Image img = view.getImage();
 
-		ColorInput tint = new ColorInput(
-				0, 0, img.getWidth(), img.getHeight(),
-				Color.rgb((tilecolor >> 16) & 0xff, (tilecolor >> 8) & 0xff, tilecolor & 0xff) // ikke spørg mig hvordan det virker..
-		);
-		view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
+			ColorInput tint = new ColorInput(
+					0, 0, img.getWidth(), img.getHeight(),
+					Color.rgb((tilecolor >> 16) & 0xff, (tilecolor >> 8) & 0xff, tilecolor & 0xff) // ikke spørg mig hvordan det virker..
+			);
+			view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
+		});
 	}
 
 	public void playerMoved(Direction direction) {

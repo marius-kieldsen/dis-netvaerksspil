@@ -53,8 +53,6 @@ public class GameLogic {
 		if (otherPlayer != null) {
 			Tile respawn = getRandomFreeTile();
 			otherPlayer.setLocation(respawn);
-		} else {
-			player.addPoints(1);
 		}
 
 		player.setLocation(newLocation);

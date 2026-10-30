@@ -22,13 +22,17 @@ public class Player {
 	}
 
 	public void claimTile(Tile tile) {
-		claimedTiles.add(tile);
-		tile.setOwner(this);
+		if (!claimedTiles.contains(tile)) {
+			claimedTiles.add(tile);
+			tile.setOwner(this);
+		}
 	}
 
 	public void removeTile(Tile tile) {
-		claimedTiles.remove(tile);
-		tile.setOwner(null);
+		if (claimedTiles.contains(tile)) {
+			claimedTiles.remove(tile);
+			tile.setOwner(null);
+		}
 	}
 
 	public HashSet<Tile> getClaimedTiles() {
