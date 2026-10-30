@@ -28,11 +28,17 @@ public class Tile {
         return owner;
     }
 
-    public void claim(Player p) {
-        owner = p;
+    public void setOwner(Player owner) {
+        if (this.owner != owner) {
+            Player oldOwner = this.owner;
+            if (oldOwner != null) {
+                oldOwner.removeTile(this);
+            }
+            this.owner = owner;
+            if (owner != null) {
+                owner.claimTile(this);
+            }
+        }
     }
 
-    public boolean isClaimed() {
-        return owner != null;
-    }
 }

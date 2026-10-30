@@ -82,7 +82,6 @@ public class Gui extends Application {
 					};
 					tiles[column][row] = new Label("", new ImageView(img));
 					boardGrid.add(tiles[column][row], column, row);
-					updateTileColor(column, row);
 				}
 			}
 			scoreList.setEditable(false);
@@ -116,23 +115,18 @@ public class Gui extends Application {
 		}
 	}
 
-	private void updateTileColor(int column, int row) {
-		ImageView view = (ImageView) tiles[column][row].getGraphic();
-		Player owner = GameMap.tileMap[column][row].getOwner();
+	public static void updateTileColor(int column, int row, int tilecolor) {
 
-		if (owner.equals(null)) {
-			view.setEffect(null);
-			return;
-		}
+		Platform.runLater(() -> {
+			ImageView view = (ImageView) tiles[column][row].getGraphic();
+			Image img = view.getImage();
 
-		int rgb = owner.getColor().getColor();
-		Image img = view.getImage();
-
-		ColorInput tint = new ColorInput(
-				0, 0, img.getWidth(), img.getHeight(),
-				Color.rgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff) // ikke spørg mig hvordan det virker..
-		);
-		view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
+			ColorInput tint = new ColorInput(
+					0, 0, img.getWidth(), img.getHeight(),
+					Color.rgb((tilecolor >> 16) & 0xff, (tilecolor >> 8) & 0xff, tilecolor & 0xff) // ikke spørg mig hvordan det virker..
+			);
+			view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
+		});
 	}
 
 	public void playerMoved(Direction direction) {

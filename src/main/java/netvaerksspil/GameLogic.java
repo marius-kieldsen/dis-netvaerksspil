@@ -43,27 +43,20 @@ public class GameLogic {
 		Tile newLocation = GameMap.tileMap[oldLocation.getX() + direction.getDx()]
 										  [oldLocation.getY() + direction.getDy()];
 
-		// collision detection
 		if (newLocation.getType() == TileType.WALL) {
-			player.addPoints(-1);
-			//Gui.placePlayerOnScreen(oldLocation, direction);
 			return;
+		} else {
+			player.claimTile(newLocation);
 		}
 
 		Player otherPlayer = getPlayerAt(newLocation);
-			if (otherPlayer != null) {
-              player.addPoints(10);
-              otherPlayer.addPoints(-10);
-              Tile respawn = getRandomFreeTile();
-              otherPlayer.setLocation(respawn);
-              //Gui.movePlayerOnScreen(newLocation,respawn,otherPlayer.getDirection());
-			} else {
-				player.addPoints(1);
-			}
+		if (otherPlayer != null) {
+			Tile respawn = getRandomFreeTile();
+			otherPlayer.setLocation(respawn);
+		}
 
-			player.setLocation(newLocation);
-			newLocation.claim(player);
-			//Gui.movePlayerOnScreen(oldLocation, newLocation, direction);
+		player.setLocation(newLocation);
+
 	}
 	
 	public static Player getPlayerAt(Tile tile) {
