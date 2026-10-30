@@ -3,6 +3,11 @@ package netvaerksspil;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.ColorInput;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -67,6 +72,7 @@ public class Gui extends Application {
 			heroImages.put(Direction.DOWN, loadImage("/images/heroDown.png"));
 
 
+			// Bygger map
 			tiles = new Label[GameMap.MAP_WIDTH][GameMap.MAP_HEIGHT];
 			for (int row = 0; row < GameMap.MAP_HEIGHT; row++) {
 				for (int column = 0; column < GameMap.MAP_WIDTH; column++) {
@@ -76,6 +82,7 @@ public class Gui extends Application {
 					};
 					tiles[column][row] = new Label("", new ImageView(img));
 					boardGrid.add(tiles[column][row], column, row);
+					updateTileColor(column, row);
 				}
 			}
 			scoreList.setEditable(false);
@@ -107,6 +114,25 @@ public class Gui extends Application {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void updateTileColor(int column, int row) {
+		ImageView view = (ImageView) tiles[column][row].getGraphic();
+		Player owner = GameMap.tileMap[column][row].getOwner();
+
+		if (owner.equals(null)) {
+			view.setEffect(null);
+			return;
+		}
+
+		int rgb = owner.getColor().getColor();
+		Image img = view.getImage();
+
+		ColorInput tint = new ColorInput(
+				0, 0, img.getWidth(), img.getHeight(),
+				Color.rgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff) // ikke spørg mig hvordan det virker..
+		);
+		view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
 	}
 
 	public void playerMoved(Direction direction) {
