@@ -1,18 +1,26 @@
 package netvaerksspil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GameLogic {
 	public static List<Player> players = new ArrayList<>();
 	private static final Random RANDOM = new Random();
+	public static final Deque<PlayerColor> freeColors = new ArrayDeque<>();
+
+	static {
+		PlayerColor[] allColors = PlayerColor.values();
+		for (int i = allColors.length - 1; i >= 0 ; i--) {
+			freeColors.push(allColors[i]);
+		}
+	}
 
 	public static Player makePlayers(String name) {
-		Player playerOne = new Player(name, 0, getRandomFreeTile(), Direction.UP);
-		players.add(playerOne);
+		if(freeColors.isEmpty()) throw new IllegalStateException("Spillet er fuldt!!!");
 
-		return playerOne;
+		PlayerColor color = freeColors.pop();
+		Player player = new Player(name, color, 0, getRandomFreeTile(), Direction.UP);
+		players.add(player);
+		return player;
 	}
 
 	// finds a random new position which is not wall
