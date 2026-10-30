@@ -31,6 +31,9 @@ public class InputThread extends Thread {
 
                     for (Player p : newPlayers) {
                         Gui.placePlayerOnScreen(p.getLocation(), p.getDirection());
+                        for (Tile tile : p.getClaimedTiles()) {
+                            Gui.updateTileColor(tile.getX(), tile.getY(), p.getColor().getColor());
+                        }
                     };
 
                     Gui.updateScoreTable(newPlayers);
