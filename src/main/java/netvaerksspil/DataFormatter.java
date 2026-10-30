@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataFormatter {
+
+    // Serveren pakker spillets data til en streng (Som bruges til at sende til klienten)
     public static String packData(List<Player> players) {
         StringBuilder stringBuilder = new StringBuilder();
         for (Player player : players) {
@@ -13,6 +15,7 @@ public class DataFormatter {
         return stringBuilder.toString();
     }
 
+    // Bruges til at pakke data ud som klienten modtager fra serveren.
     public static List<Player> parseData(String input) {
         List<Player> newPlayers = new ArrayList<>();
         for (String playerData : input.split("\\.")) {

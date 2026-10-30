@@ -19,6 +19,7 @@ public class App {
 		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 		inputThread = new InputThread(inFromServer);
+		inputThread.setDaemon(true);
 
 		Application.launch(Gui.class);
 	}
