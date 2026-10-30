@@ -102,7 +102,7 @@ public class Gui extends Application {
 				case DOWN   -> playerMoved(Direction.DOWN);
 				case LEFT   -> playerMoved(Direction.LEFT);
 				case RIGHT  -> playerMoved(Direction.RIGHT);
-				case ESCAPE -> exitGame();
+				case ESCAPE -> System.exit(0);
 				default  	-> { }
 				}
 			});
@@ -169,16 +169,6 @@ public class Gui extends Application {
 		Platform.runLater(() -> {
 			scoreList.setText(getScoreList(playerList));
 		});
-	}
-
-	public static void exitGame() {
-		try {
-			App.outToServer.writeBytes("ESC" + "\n");
-			App.outToServer.flush();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		System.exit(0);
 	}
 
 	public static String getScoreList(List<Player> playerList) {

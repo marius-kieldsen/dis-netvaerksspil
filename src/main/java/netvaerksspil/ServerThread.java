@@ -10,6 +10,7 @@ public class ServerThread extends Thread{
 	GameLogic game;
 	DataOutputStream outToClient;
 	Player connectedPlayer;
+	String playername;
 	
 	public ServerThread(Socket connSocket) {
 		this.connSocket = connSocket;
@@ -18,7 +19,7 @@ public class ServerThread extends Thread{
 		try {
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
 			outToClient = new DataOutputStream(connSocket.getOutputStream());
-			String playername = inFromClient.readLine();
+			playername = inFromClient.readLine();
 			connectedPlayer = GameLogic.makePlayers(playername);
 			outToClient.writeBytes(DataFormatter.packData(game.players));
 
@@ -41,16 +42,12 @@ public class ServerThread extends Thread{
 				}
 				Thread.sleep(10);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
+		} catch (IOException e) {} catch (InterruptedException e) {} finally {
 			// Hvis spilleren forlader
             try {
 				GameLogic.players.remove(connectedPlayer);
-                outToClient.writeBytes("ESC" + "\n");
 				GameLogic.freeColors.push(connectedPlayer.getColor());
+				System.out.println("Player left: " + playername);
 				connSocket.close();
             } catch (IOException e) {}
 		}
