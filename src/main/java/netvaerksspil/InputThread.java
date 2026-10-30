@@ -19,10 +19,6 @@ public class InputThread extends Thread {
                 String input = inFromServer.readLine();
                 if (input != null) {
 
-                    if (input.equals("ESC")) {
-                        return;
-                    }
-
                     for (Player old : newPlayers) {
                         Gui.removePlayerOnScreen(old.getLocation());
                         Gui.resetTiles();

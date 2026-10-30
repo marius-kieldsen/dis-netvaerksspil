@@ -8,6 +8,8 @@ import java.net.Socket;
 public class ServerThread extends Thread{
 	Socket connSocket;
 	GameLogic game;
+	DataOutputStream outToClient;
+	Player connectedPlayer;
 	
 	public ServerThread(Socket connSocket) {
 		this.connSocket = connSocket;
@@ -15,28 +17,19 @@ public class ServerThread extends Thread{
 	public void run() {
 		try {
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
-			DataOutputStream outToClient = new DataOutputStream(connSocket.getOutputStream());
+			outToClient = new DataOutputStream(connSocket.getOutputStream());
 			String playername = inFromClient.readLine();
-			Player me = GameLogic.makePlayers(playername);
+			connectedPlayer = GameLogic.makePlayers(playername);
 			outToClient.writeBytes(DataFormatter.packData(game.players));
 
 			System.out.println("Player connected: " + playername);
 
 			String input = "";
-			while (true) {
+			while (!connSocket.isClosed()) {
 				if (!input.isEmpty()) {
 
-					// Hvis spilleren forlader
-					if (input.equals("ESC")) {
-						GameLogic.players.remove(me);
-						outToClient.writeBytes("ESC" + "\n");
-						connSocket.close();
-						GameLogic.freeColors.push(me.getColor());
-
-					} else {
-						String[] newPlayerPos = input.split("#");
-						GameLogic.updatePlayer(me, Direction.valueOf(newPlayerPos[0]));
-					}
+					String[] newPlayerPos = input.split("#");
+					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(newPlayerPos[0]));
 				}
 				outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
 				outToClient.flush();
@@ -52,6 +45,14 @@ public class ServerThread extends Thread{
 			e.printStackTrace();
 		} catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        } finally {
+			// Hvis spilleren forlader
+            try {
+				GameLogic.players.remove(connectedPlayer);
+                outToClient.writeBytes("ESC" + "\n");
+				GameLogic.freeColors.push(connectedPlayer.getColor());
+				connSocket.close();
+            } catch (IOException e) {}
+		}
     }
 }

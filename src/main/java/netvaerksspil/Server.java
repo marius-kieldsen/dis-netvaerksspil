@@ -1,5 +1,6 @@
 package netvaerksspil;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 public class Server {
@@ -7,7 +8,7 @@ public class Server {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)throws Exception {
+	public static void main(String[] args) throws IOException {
 		ServerSocket spiller = new ServerSocket(6789);
 		while (true) {
 			// Lad nye spillere forbinde
