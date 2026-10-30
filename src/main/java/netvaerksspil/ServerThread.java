@@ -26,10 +26,6 @@ public class ServerThread extends Thread{
 			while (true) {
 				if (!input.isEmpty()) {
 
-					// Tøm input buffer (For at sørge for at server kun reagerer på 1 opdatering pr ms)
-					while (inFromClient.ready()) {
-						inFromClient.readLine();
-					}
 					// Hvis spilleren forlader
 					if (input.equals("ESC")) {
 						GameLogic.players.remove(me);

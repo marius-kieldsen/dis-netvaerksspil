@@ -25,6 +25,7 @@ public class InputThread extends Thread {
 
                     for (Player old : newPlayers) {
                         Gui.removePlayerOnScreen(old.getLocation());
+                        Gui.resetTiles();
                     }
                     newPlayers = DataFormatter.parseData(input);
 

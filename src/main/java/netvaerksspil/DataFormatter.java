@@ -13,7 +13,6 @@ public class DataFormatter {
             stringBuilder
                     .append(player.getName()).append("#")
                     .append(player.getColor().name()).append("#")
-                    .append(player.getPoint()).append("#")
                     .append(player.getLocation().getX()).append("#")
                     .append(player.getLocation().getY()).append("#")
                     .append(player.getDirection()).append("#")
@@ -31,14 +30,13 @@ public class DataFormatter {
                 String[] fields = playerData.split("#");
                 String name = fields[0];
                 PlayerColor color = PlayerColor.valueOf(fields[1]);
-                int points = Integer.parseInt(fields[2]);
-                int x = Integer.parseInt(fields[3]);
-                int y = Integer.parseInt(fields[4]);
-                String direction = fields[5];
-                String tilesString = fields[6];
+                int x = Integer.parseInt(fields[2]);
+                int y = Integer.parseInt(fields[3]);
+                String direction = fields[4];
+                String tilesString = fields[5];
 
 
-                Player player = new Player(name, color, points, GameMap.tileMap[x][y], Direction.valueOf(direction));
+                Player player = new Player(name, color, GameMap.tileMap[x][y], Direction.valueOf(direction));
                 player.setClaimedTiles(claimedTilesToSet(tilesString, player));
                 newPlayers.add(player);
             };

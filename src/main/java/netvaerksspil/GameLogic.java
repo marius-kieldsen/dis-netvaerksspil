@@ -18,7 +18,7 @@ public class GameLogic {
 		if(freeColors.isEmpty()) throw new IllegalStateException("Spillet er fuldt!!!");
 
 		PlayerColor color = freeColors.pop();
-		Player player = new Player(name, color, 0, getRandomFreeTile(), Direction.UP);
+		Player player = new Player(name, color, getRandomFreeTile(), Direction.UP);
 		players.add(player);
 		return player;
 	}

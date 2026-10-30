@@ -102,12 +102,13 @@ public class Gui extends Application {
 				case DOWN   -> playerMoved(Direction.DOWN);
 				case LEFT   -> playerMoved(Direction.LEFT);
 				case RIGHT  -> playerMoved(Direction.RIGHT);
-				case ESCAPE -> System.exit(0);
+				case ESCAPE -> exitGame();
 				default  	-> { }
 				}
 			});
 
 			// Startes først når mappet er loadet
+			App.inputThread.setDaemon(true);
 			App.inputThread.start();
 
 		} catch(Exception e) {
@@ -116,7 +117,6 @@ public class Gui extends Application {
 	}
 
 	public static void updateTileColor(int column, int row, int tilecolor) {
-
 		Platform.runLater(() -> {
 			ImageView view = (ImageView) tiles[column][row].getGraphic();
 			Image img = view.getImage();
@@ -126,6 +126,19 @@ public class Gui extends Application {
 					Color.rgb((tilecolor >> 16) & 0xff, (tilecolor >> 8) & 0xff, tilecolor & 0xff) // ikke spørg mig hvordan det virker..
 			);
 			view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
+		});
+	}
+
+	public static void resetTiles() {
+		Platform.runLater(() -> {
+			for (int row = 0; row < GameMap.MAP_HEIGHT; row++) {
+				for (int column = 0; column < GameMap.MAP_WIDTH; column++) {
+					if (GameMap.tileMap[column][row].getType() == TileType.FLOOR) {
+						ImageView view = (ImageView) tiles[column][row].getGraphic();
+						view.setEffect(null);
+					}
+				}
+			}
 		});
 	}
 
@@ -151,20 +164,21 @@ public class Gui extends Application {
 		});
 	}
 
-	public void playerLeft() {
+	public static void updateScoreTable(List<Player> playerList)
+	{
+		Platform.runLater(() -> {
+			scoreList.setText(getScoreList(playerList));
+		});
+	}
+
+	public static void exitGame() {
 		try {
 			App.outToServer.writeBytes("ESC" + "\n");
 			App.outToServer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public static void updateScoreTable(List<Player> playerList)
-	{
-		Platform.runLater(() -> {
-			scoreList.setText(getScoreList(playerList));
-		});
+		System.exit(0);
 	}
 
 	public static String getScoreList(List<Player> playerList) {

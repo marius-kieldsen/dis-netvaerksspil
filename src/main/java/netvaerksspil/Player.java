@@ -10,14 +10,12 @@ public class Player {
 	private Tile location;
 	private HashSet<Tile> claimedTiles;
 	private Direction direction;
-	private int point;
 
-	public Player(String name, PlayerColor color, int points, Tile location, Direction direction) {
+	public Player(String name, PlayerColor color, Tile location, Direction direction) {
 		this.name = name;
         this.color = color;
         this.location = location;
 		this.direction = direction;
-		this.point = points;
 		claimedTiles = new HashSet<>();
 	}
 
@@ -25,7 +23,6 @@ public class Player {
 		if (!claimedTiles.contains(tile)) {
 			claimedTiles.add(tile);
 			tile.setOwner(this);
-			point++;
 		}
 	}
 
@@ -33,7 +30,6 @@ public class Player {
 		if (claimedTiles.contains(tile)) {
 			claimedTiles.remove(tile);
 			tile.setOwner(null);
-			point--;
 		}
 	}
 
@@ -56,7 +52,7 @@ public class Player {
 
 	public String getName() { return name; }
 
-	public int getPoint() { return point; }
+	public int getPoint() { return claimedTiles.size(); }
 
 	public Tile getLocation() {
 		return this.location;
@@ -75,7 +71,7 @@ public class Player {
 	}
 
 	public String toString() {
-		return name+":   "+point;
+		return name+":   "+ getPoint();
 	}
 
 
