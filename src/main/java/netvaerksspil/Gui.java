@@ -11,7 +11,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
 
+import java.io.IOException;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class Gui extends Application {
@@ -26,7 +28,7 @@ public class Gui extends Application {
 	private static final Map<Direction, Image> heroImages = new EnumMap<>(Direction.class);
 
 	private static Label[][] tiles;
-	private TextArea scoreList;
+	private static TextArea scoreList;
 	
 
 
@@ -98,46 +100,56 @@ public class Gui extends Application {
 				default  	-> { }
 				}
 			});
-			
-            // Putting default players on screen
-			for (Player p : GameLogic.players) {
-				placePlayerOnScreen(p.getLocation(), p.getDirection());
-			}
-			scoreList.setText(getScoreList());
+
+			// Startes først når mappet er loadet
+			App.inputThread.start();
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void removePlayerOnScreen(Tile oldpos) {
-		Platform.runLater(() -> {
-			tiles[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(imageFloor));
-		});
-	}
-	
-	public static void placePlayerOnScreen(Tile newpos, Direction direction) {
-		Platform.runLater(() -> {
-			tiles[newpos.getX()][newpos.getY()].setGraphic(new ImageView(heroImages.get(direction)));
-			});
-	}
-	
-	public static void movePlayerOnScreen(Tile oldpos, Tile newpos, Direction direction) {
-		removePlayerOnScreen(oldpos);
-		placePlayerOnScreen(newpos,direction);
-	}
-	
-	public void updateScoreTable() {
-		Platform.runLater(() -> scoreList.setText(getScoreList()));
-	}
 
 	public void playerMoved(Direction direction) {
-		GameLogic.updatePlayer(App.me,direction);
-		updateScoreTable();
+		try {
+			App.outToServer.writeBytes(direction.toString() + "\n");
+			App.outToServer.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
-	
-	public String getScoreList() {
+
+	public static void removePlayerOnScreen(Tile tile) {
+		Platform.runLater(() -> {
+			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(imageFloor));
+		});
+	}
+
+	public static void placePlayerOnScreen(Tile tile,Direction direction) {
+		Platform.runLater(() -> {
+			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(heroImages.get(direction)));
+		});
+	}
+
+	public void playerLeft() {
+		try {
+			App.outToServer.writeBytes("ESC" + "\n");
+			App.outToServer.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static void updateScoreTable(List<Player> playerList)
+	{
+		Platform.runLater(() -> {
+			scoreList.setText(getScoreList(playerList));
+		});
+	}
+
+	public static String getScoreList(List<Player> playerList) {
 		StringBuffer b = new StringBuffer(100);
-		for (Player p : GameLogic.players) {
+		for (Player p : playerList) {
 			b.append(p+"\r\n");
 		}
 		return b.toString();

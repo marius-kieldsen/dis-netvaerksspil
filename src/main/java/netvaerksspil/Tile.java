@@ -35,6 +35,4 @@ public class Tile {
     public boolean isClaimed() {
         return owner != null;
     }
-
-
 }

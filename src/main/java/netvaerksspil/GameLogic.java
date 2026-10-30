@@ -9,11 +9,9 @@ public class GameLogic {
 	private static final Random RANDOM = new Random();
 
 	public static Player makePlayers(String name) {
-		Player playerOne = new Player(name, getRandomFreeTile(), Direction.UP);
+		Player playerOne = new Player(name, 0, getRandomFreeTile(), Direction.UP);
 		players.add(playerOne);
 
-		Player playerTwo = new Player("Kaj",getRandomFreeTile(),Direction.UP);
-		players.add(playerTwo);
 		return playerOne;
 	}
 
@@ -40,7 +38,7 @@ public class GameLogic {
 		// collision detection
 		if (newLocation.getType() == TileType.WALL) {
 			player.addPoints(-1);
-			Gui.placePlayerOnScreen(oldLocation, direction);
+			//Gui.placePlayerOnScreen(oldLocation, direction);
 			return;
 		}
 
@@ -50,14 +48,14 @@ public class GameLogic {
               otherPlayer.addPoints(-10);
               Tile respawn = getRandomFreeTile();
               otherPlayer.setLocation(respawn);
-              Gui.movePlayerOnScreen(newLocation,respawn,otherPlayer.getDirection());
+              //Gui.movePlayerOnScreen(newLocation,respawn,otherPlayer.getDirection());
 			} else {
 				player.addPoints(1);
 			}
 
 			player.setLocation(newLocation);
 			newLocation.claim(player);
-			Gui.movePlayerOnScreen(oldLocation, newLocation, direction);
+			//Gui.movePlayerOnScreen(oldLocation, newLocation, direction);
 	}
 	
 	public static Player getPlayerAt(Tile tile) {
