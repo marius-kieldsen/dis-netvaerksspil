@@ -25,6 +25,7 @@ public class Player {
 		if (!claimedTiles.contains(tile)) {
 			claimedTiles.add(tile);
 			tile.setOwner(this);
+			point++;
 		}
 	}
 
@@ -32,6 +33,13 @@ public class Player {
 		if (claimedTiles.contains(tile)) {
 			claimedTiles.remove(tile);
 			tile.setOwner(null);
+			point--;
+		}
+	}
+
+	public void resetClaimedTiles() {
+		for (Tile tile : claimedTiles) {
+			removeTile(tile);
 		}
 	}
 
@@ -66,10 +74,6 @@ public class Player {
 
 	public void setDirection(Direction direction) {
 		this.direction = direction;
-	}
-
-	public void addPoints(int p) {
-		point+=p;
 	}
 
 	public String toString() {
