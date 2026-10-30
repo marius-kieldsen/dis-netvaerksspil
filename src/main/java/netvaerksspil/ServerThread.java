@@ -11,7 +11,6 @@ public class ServerThread extends Thread{
 	
 	public ServerThread(Socket connSocket) {
 		this.connSocket = connSocket;
-
 	}
 	public void run() {
 		try {
@@ -36,6 +35,8 @@ public class ServerThread extends Thread{
 						GameLogic.players.remove(me);
 						outToClient.writeBytes("ESC" + "\n");
 						connSocket.close();
+						GameLogic.freeColors.push(me.getColor());
+
 					} else {
 						String[] newPlayerPos = input.split("#");
 						GameLogic.updatePlayer(me, Direction.valueOf(newPlayerPos[0]));
