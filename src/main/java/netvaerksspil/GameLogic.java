@@ -14,7 +14,7 @@ public class GameLogic {
 		}
 	}
 
-	public static Player makePlayers(String name) {
+	public synchronized static Player makePlayers(String name) {
 		if(freeColors.isEmpty()) throw new IllegalStateException("Spillet er fuldt!!!");
 
 		PlayerColor color = freeColors.pop();
@@ -28,7 +28,7 @@ public class GameLogic {
 
 	// finds a random new position which is not wall
 	// and not occupied by other players
-	public static Tile getRandomFreeTile() {
+	public synchronized static Tile getRandomFreeTile() {
 		while (true) {
 			int x = 1 + RANDOM.nextInt(GameMap.MAP_WIDTH - 2);
 			int y = 1 + RANDOM.nextInt(GameMap.MAP_HEIGHT - 2);
@@ -39,7 +39,7 @@ public class GameLogic {
 		}
 	}
 	
-	public static void updatePlayer(Player player, Direction direction) {
+	public synchronized static void updatePlayer(Player player, Direction direction) {
 		player.setDirection(direction);
 
 		Tile oldLocation = player.getLocation();

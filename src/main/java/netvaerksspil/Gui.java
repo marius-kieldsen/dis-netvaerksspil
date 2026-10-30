@@ -138,8 +138,7 @@ public class Gui extends Application {
 		});
 	}
 
-	public static void updateTileColor(int column, int row, int tilecolor) {
-		Platform.runLater(() -> {
+	private static void updateTileColor(int column, int row, int tilecolor) {
 			ImageView view = (ImageView) tiles[column][row].getGraphic();
 			Image img = view.getImage();
 
@@ -148,11 +147,9 @@ public class Gui extends Application {
 					Color.rgb((tilecolor >> 16) & 0xff, (tilecolor >> 8) & 0xff, tilecolor & 0xff) // ikke spørg mig hvordan det virker..
 			);
 			view.setEffect(new Blend(BlendMode.MULTIPLY, null, tint));
-		});
 	}
 
-	public static void resetTiles() {
-		Platform.runLater(() -> {
+	private static void resetTiles() {
 			for (int row = 0; row < GameMap.MAP_HEIGHT; row++) {
 				for (int column = 0; column < GameMap.MAP_WIDTH; column++) {
 					if (GameMap.tileMap[column][row].getType() == TileType.FLOOR) {
@@ -161,10 +158,9 @@ public class Gui extends Application {
 					}
 				}
 			}
-		});
 	}
 
-	public void playerMoved(Direction direction) {
+	private void playerMoved(Direction direction) {
 		try {
 			App.outToServer.writeBytes(direction.toString() + "\n");
 			App.outToServer.flush();
@@ -174,26 +170,23 @@ public class Gui extends Application {
 
 	}
 
-	public static void removePlayerOnScreen(Tile tile) {
-		Platform.runLater(() -> {
+	private static void removePlayerOnScreen(Tile tile) {
+
 			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(imageFloor));
-		});
 	}
 
-	public static void placePlayerOnScreen(Tile tile,Direction direction) {
-		Platform.runLater(() -> {
+	private static void placePlayerOnScreen(Tile tile,Direction direction) {
+
 			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(heroImages.get(direction)));
-		});
+
 	}
 
-	public static void updateScoreTable(List<Player> playerList)
+	private static void updateScoreTable(List<Player> playerList)
 	{
-		Platform.runLater(() -> {
 			scoreList.setText(getScoreList(playerList));
-		});
 	}
 
-	public static String getScoreList(List<Player> playerList) {
+	private static String getScoreList(List<Player> playerList) {
 		StringBuffer b = new StringBuffer(100);
 		for (Player p : playerList) {
 			b.append(p+"\r\n");
