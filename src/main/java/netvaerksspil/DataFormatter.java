@@ -1,5 +1,7 @@
 package netvaerksspil;
 
+import netvaerksspil.server.GameLogic;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +48,7 @@ public class DataFormatter {
         return newPlayers;
     }
 
-    public static String claimedTilesString(HashSet<Tile> set) {
+    private static String claimedTilesString(HashSet<Tile> set) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(":");
         for (Tile t : set) {
@@ -57,7 +59,7 @@ public class DataFormatter {
 
     }
 
-    public static HashSet<Tile> claimedTilesToSet(String claimedTilesString, Player player) {
+    private static HashSet<Tile> claimedTilesToSet(String claimedTilesString, Player player) {
         HashSet<Tile> claimedTilesSet = new HashSet<>();
         int length = claimedTilesString.length();
         if (length > 2) {

@@ -1,4 +1,7 @@
-package netvaerksspil;
+package netvaerksspil.klient;
+
+import netvaerksspil.DataFormatter;
+import netvaerksspil.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;

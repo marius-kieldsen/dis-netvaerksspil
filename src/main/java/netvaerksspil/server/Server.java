@@ -1,4 +1,4 @@
-package netvaerksspil;
+package netvaerksspil.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

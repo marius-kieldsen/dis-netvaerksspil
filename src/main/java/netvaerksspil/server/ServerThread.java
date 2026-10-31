@@ -1,11 +1,14 @@
-package netvaerksspil;
+package netvaerksspil.server;
+
+import netvaerksspil.DataFormatter;
+import netvaerksspil.Direction;
+import netvaerksspil.Player;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class ServerThread extends Thread{
 	Socket connSocket;
@@ -27,11 +30,10 @@ public class ServerThread extends Thread{
 
 			String input = "";
 			while (input != null) {
+				input = inFromClient.readLine();
 				if (!input.isEmpty()) {
 					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(input));
 				}
-
-				input = inFromClient.readLine();
 
 				Thread.sleep(10);
 			}
@@ -51,7 +53,7 @@ public class ServerThread extends Thread{
 		}
     }
 
-	public void send() {
+	public void sendNewDataToClient() {
 		try {
 			outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
 			outToClient.flush();
