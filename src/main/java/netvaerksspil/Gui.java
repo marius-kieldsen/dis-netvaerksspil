@@ -120,7 +120,6 @@ public class Gui extends Application {
 
 	public static void renderNew(List<Player> newPlayers) {
 		Platform.runLater(() -> {
-			System.out.println("Rendered");
 			for (Player old : players) {
 				Gui.removePlayerOnScreen(old.getLocation());
 				Gui.resetTiles();

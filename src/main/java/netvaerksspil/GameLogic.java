@@ -15,15 +15,15 @@ public class GameLogic {
 		}
 	}
 
-	public static void registerObserver(ServerThread observer) {
+	public synchronized static void registerObserver(ServerThread observer) {
 		observers.add(observer);
 	}
 
-	public static void removeObserver(ServerThread observer) {
+	public synchronized static void removeObserver(ServerThread observer) {
 		observers.remove(observer);
 	}
 
-	public static void notifyObservers() {
+	public synchronized static void notifyObservers() {
 		for (ServerThread observer : observers) {
 			observer.send();
 		}

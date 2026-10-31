@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
+
 public class ServerThread extends Thread{
 	Socket connSocket;
 	DataOutputStream outToClient;
@@ -24,27 +26,28 @@ public class ServerThread extends Thread{
 			System.out.println("Player connected: " + playername);
 
 			String input = "";
-			while (!connSocket.isClosed()) {
+			while (input != null) {
 				if (!input.isEmpty()) {
 					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(input));
 				}
 
-				if (inFromClient.ready()) {
-					input = inFromClient.readLine();
-				} else {
-					input = "";
-				}
+				input = inFromClient.readLine();
+
 				Thread.sleep(10);
 			}
-		} catch (IOException e) {} catch (InterruptedException e) {} finally {
+		} catch (IOException | InterruptedException | IllegalArgumentException ignored) {}
+		finally {
 			// Hvis spilleren forlader
-            try {
+			if (connectedPlayer != null) {
 				GameLogic.players.remove(connectedPlayer);
 				GameLogic.freeColors.push(connectedPlayer.getColor());
 				System.out.println("Player left: " + playername);
-				GameLogic.removeObserver(this);
+			}
+			GameLogic.removeObserver(this);
+			GameLogic.notifyObservers();
+            try {
 				connSocket.close();
-            } catch (IOException e) {}
+            } catch (IOException ignored) {}
 		}
     }
 
@@ -52,9 +55,7 @@ public class ServerThread extends Thread{
 		try {
 			outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
 			outToClient.flush();
-		} catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+		} catch (IOException e) {}
 
     }
 }
