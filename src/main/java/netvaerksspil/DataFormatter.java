@@ -8,18 +8,20 @@ public class DataFormatter {
 
     // Serveren pakker spillets data til en streng (Som bruges til at sende til klienten)
     public static String packData(List<Player> players) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Player player : players) {
-            stringBuilder
-                    .append(player.getName()).append("#")
-                    .append(player.getColor().name()).append("#")
-                    .append(player.getLocation().getX()).append("#")
-                    .append(player.getLocation().getY()).append("#")
-                    .append(player.getDirection()).append("#")
-                    .append(claimedTilesString(player.getClaimedTiles())).append(".");
+        synchronized (GameLogic.class) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Player player : players) {
+                stringBuilder
+                        .append(player.getName()).append("#")
+                        .append(player.getColor().name()).append("#")
+                        .append(player.getLocation().getX()).append("#")
+                        .append(player.getLocation().getY()).append("#")
+                        .append(player.getDirection()).append("#")
+                        .append(claimedTilesString(player.getClaimedTiles())).append(".");
+            }
+            stringBuilder.append("\n");
+            return stringBuilder.toString();
         }
-        stringBuilder.append("\n");
-        return stringBuilder.toString();
     }
 
     // Bruges til at pakke data ud som klienten modtager fra serveren.

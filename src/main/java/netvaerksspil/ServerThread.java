@@ -7,33 +7,27 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 public class ServerThread extends Thread{
 	Socket connSocket;
-	GameLogic game;
 	DataOutputStream outToClient;
 	Player connectedPlayer;
 	String playername;
 	
-	public ServerThread(Socket connSocket) {
+	public ServerThread(Socket connSocket) throws IOException {
 		this.connSocket = connSocket;
+		outToClient = new DataOutputStream(connSocket.getOutputStream());
 	}
 	public void run() {
 		try {
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
-			outToClient = new DataOutputStream(connSocket.getOutputStream());
 			playername = inFromClient.readLine();
+			GameLogic.registerObserver(this);
 			connectedPlayer = GameLogic.makePlayers(playername);
-			outToClient.writeBytes(DataFormatter.packData(game.players));
-
 			System.out.println("Player connected: " + playername);
 
 			String input = "";
 			while (!connSocket.isClosed()) {
 				if (!input.isEmpty()) {
-
-					String[] newPlayerPos = input.split("#");
-					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(newPlayerPos[0]));
+					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(input));
 				}
-				outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
-				outToClient.flush();
 
 				if (inFromClient.ready()) {
 					input = inFromClient.readLine();
@@ -48,8 +42,19 @@ public class ServerThread extends Thread{
 				GameLogic.players.remove(connectedPlayer);
 				GameLogic.freeColors.push(connectedPlayer.getColor());
 				System.out.println("Player left: " + playername);
+				GameLogic.removeObserver(this);
 				connSocket.close();
             } catch (IOException e) {}
 		}
+    }
+
+	public void send() {
+		try {
+			outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
+			outToClient.flush();
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -120,6 +120,7 @@ public class Gui extends Application {
 
 	public static void renderNew(List<Player> newPlayers) {
 		Platform.runLater(() -> {
+			System.out.println("Rendered");
 			for (Player old : players) {
 				Gui.removePlayerOnScreen(old.getLocation());
 				Gui.resetTiles();
@@ -176,9 +177,7 @@ public class Gui extends Application {
 	}
 
 	private static void placePlayerOnScreen(Tile tile,Direction direction) {
-
 			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(heroImages.get(direction)));
-
 	}
 
 	private static void updateScoreTable(List<Player> playerList)

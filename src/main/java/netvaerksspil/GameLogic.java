@@ -6,11 +6,26 @@ public class GameLogic {
 	public static List<Player> players = new ArrayList<>();
 	private static final Random RANDOM = new Random();
 	public static final Deque<PlayerColor> freeColors = new ArrayDeque<>();
+	private static List<ServerThread> observers = new ArrayList<>();
 
 	static {
 		PlayerColor[] allColors = PlayerColor.values();
 		for (int i = allColors.length - 1; i >= 0 ; i--) {
 			freeColors.push(allColors[i]);
+		}
+	}
+
+	public static void registerObserver(ServerThread observer) {
+		observers.add(observer);
+	}
+
+	public static void removeObserver(ServerThread observer) {
+		observers.remove(observer);
+	}
+
+	public static void notifyObservers() {
+		for (ServerThread observer : observers) {
+			observer.send();
 		}
 	}
 
@@ -22,6 +37,8 @@ public class GameLogic {
 		Player player = new Player(name, color, startPosition, Direction.UP);
 		players.add(player);
 		player.claimTile(startPosition);
+
+		notifyObservers();
 
 		return player;
 	}
@@ -60,10 +77,10 @@ public class GameLogic {
 		}
 
 		player.setLocation(newLocation);
-
+		notifyObservers();
 	}
 	
-	public static Player getPlayerAt(Tile tile) {
+	public synchronized static Player getPlayerAt(Tile tile) {
 		for (Player p : players) {
 			if (p.getLocation() == tile) {
 				return p;
