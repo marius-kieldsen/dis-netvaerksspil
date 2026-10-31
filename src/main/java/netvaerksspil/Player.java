@@ -33,6 +33,11 @@ public class Player {
 		}
 	}
 
+	public void claimOtherPlayersTiles(Player otherplayer) {
+		claimedTiles.addAll(otherplayer.getClaimedTiles());
+		otherplayer.resetClaimedTiles();
+	}
+
 	public void resetClaimedTiles() {
 		claimedTiles.clear();
 	}

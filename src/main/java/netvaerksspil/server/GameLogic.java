@@ -48,7 +48,10 @@ public class GameLogic {
 		if (otherPlayer != null) {
 			Tile respawn = getRandomFreeTile();
 			otherPlayer.setLocation(respawn);
-			otherPlayer.resetClaimedTiles();
+
+			// Overtag alle af modstanderens felter
+			player.claimOtherPlayersTiles(otherPlayer);
+
 		}
 
 		player.setLocation(newLocation);
