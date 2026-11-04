@@ -34,9 +34,12 @@ public class Player {
 	}
 
 	public void claimOtherPlayersTiles(Player otherplayer) {
-		claimedTiles.addAll(otherplayer.getClaimedTiles());
-		otherplayer.resetClaimedTiles();
+		for (Tile tile : new ArrayList<>(otherplayer.getClaimedTiles())) {
+			claimTile(tile);
+		}
 	}
+
+
 
 	public void resetClaimedTiles() {
 		claimedTiles.clear();
@@ -64,6 +67,7 @@ public class Player {
 	}
 
 	public void setLocation(Tile tile) {
+		claimTile(tile);
 		this.location = tile;
 	}
 

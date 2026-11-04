@@ -25,7 +25,6 @@ public class GameLogic {
 		Player player = new Player(name, color, startPosition, Direction.UP);
 		players.add(player);
 		player.claimTile(startPosition);
-
 		notifyObservers();
 
 		return player;
@@ -46,12 +45,10 @@ public class GameLogic {
 
 		Player otherPlayer = getPlayerAt(newLocation);
 		if (otherPlayer != null) {
-			Tile respawn = getRandomFreeTile();
-			otherPlayer.setLocation(respawn);
-
 			// Overtag alle af modstanderens felter
 			player.claimOtherPlayersTiles(otherPlayer);
-
+			Tile respawn = getRandomFreeTile();
+			otherPlayer.setLocation(respawn);
 		}
 
 		player.setLocation(newLocation);

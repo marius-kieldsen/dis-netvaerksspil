@@ -30,12 +30,11 @@ public class ServerThread extends Thread{
 
 			String input = "";
 			while (input != null) {
-				input = inFromClient.readLine();
 				if (!input.isEmpty()) {
 					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(input));
 				}
-
-				Thread.sleep(10);
+				input = inFromClient.readLine();
+				Thread.sleep(4);
 			}
 		} catch (IOException | InterruptedException | IllegalArgumentException ignored) {}
 		finally {
