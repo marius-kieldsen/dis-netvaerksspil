@@ -8,7 +8,6 @@ public class GameLogic {
 	public static List<Player> players = new ArrayList<>();
 	private static final Random RANDOM = new Random();
 	public static final Deque<PlayerColor> freeColors = new ArrayDeque<>();
-	private static final List<ServerThread> observers = new ArrayList<>();
 
 	static {
 		PlayerColor[] allColors = PlayerColor.values();
@@ -25,7 +24,6 @@ public class GameLogic {
 		Player player = new Player(name, color, startPosition, Direction.UP);
 		players.add(player);
 		player.claimTile(startPosition);
-		notifyObservers();
 
 		return player;
 	}
@@ -52,7 +50,6 @@ public class GameLogic {
 		}
 
 		player.setLocation(newLocation);
-		notifyObservers();
 	}
 
 	// finds a random new position which is not wall
@@ -77,17 +74,4 @@ public class GameLogic {
 		return null;
 	}
 
-	public synchronized static void registerObserver(ServerThread observer) {
-		observers.add(observer);
-	}
-
-	public synchronized static void removeObserver(ServerThread observer) {
-		observers.remove(observer);
-	}
-
-	public synchronized static void notifyObservers() {
-		for (ServerThread observer : observers) {
-			observer.sendNewDataToClient();
-		}
-	}
 }

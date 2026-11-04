@@ -24,7 +24,6 @@ public class ServerThread extends Thread{
 		try {
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
 			playername = inFromClient.readLine();
-			GameLogic.registerObserver(this);
 			connectedPlayer = GameLogic.makePlayers(playername);
 			System.out.println("Player connected: " + playername);
 
@@ -33,7 +32,16 @@ public class ServerThread extends Thread{
 				if (!input.isEmpty()) {
 					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(input));
 				}
-				input = inFromClient.readLine();
+
+				outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
+				outToClient.flush();
+
+				if (inFromClient.ready()) {
+					input = inFromClient.readLine();
+				} else {
+					input = "";
+				}
+
 				Thread.sleep(4);
 			}
 		} catch (IOException | InterruptedException | IllegalArgumentException ignored) {}
@@ -44,19 +52,9 @@ public class ServerThread extends Thread{
 				GameLogic.freeColors.push(connectedPlayer.getColor());
 				System.out.println("Player left: " + playername);
 			}
-			GameLogic.removeObserver(this);
-			GameLogic.notifyObservers();
             try {
 				connSocket.close();
             } catch (IOException ignored) {}
 		}
-    }
-
-	public void sendNewDataToClient() {
-		try {
-			outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
-			outToClient.flush();
-		} catch (IOException e) {}
-
     }
 }
