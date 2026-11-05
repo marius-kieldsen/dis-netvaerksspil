@@ -60,6 +60,9 @@ public class Gui extends Application {
 			Text scoreLabel = new Text("Score:");
 			scoreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
+			Label timerLabel = new Label();
+			timerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
 			scoreList = new TextArea();
 			
 			GridPane boardGrid = new GridPane();
@@ -92,6 +95,7 @@ public class Gui extends Application {
 			grid.add(scoreLabel, 1, 0); 
 			grid.add(boardGrid,  0, 1);
 			grid.add(scoreList,  1, 1);
+			grid.add(timerLabel, 1, 2);
 						
 			Scene scene = new Scene(grid, SCENE_WIDTH, SCENE_HEIGHT);
 			primaryStage.setScene(scene);
@@ -193,6 +197,10 @@ public class Gui extends Application {
 
 	private Image loadImage(String path) {
 		return new Image(getClass().getResourceAsStream(path), TILE_SIZE, TILE_SIZE, false, false);
+	}
+
+	private String format(int totalSeconds) {
+		return String.format("%d:%02d", totalSeconds / 60, totalSeconds % 60);
 	}
 }
 
