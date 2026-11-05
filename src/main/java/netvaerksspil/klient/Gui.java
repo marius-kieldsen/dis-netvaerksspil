@@ -118,8 +118,10 @@ public class Gui extends Application {
 	}
 
 
-	public static void renderNew(List<Player> newPlayers) {
+	public static void renderNew(List<Player> newPlayers, int timeLeft) {
 		Platform.runLater(() -> {
+
+
 			for (Player old : players) {
 				Gui.removePlayerOnScreen(old.getLocation());
 				Gui.resetTiles();
@@ -132,7 +134,12 @@ public class Gui extends Application {
 				}
 			};
 
-			Gui.updateScoreTable(newPlayers);
+			if (timeLeft <= 0) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION, "Spil slut!!", ButtonType.CLOSE);
+				alert.show();
+			} else {
+				Gui.updateScoreTable(newPlayers, timeLeft);
+			}
 
 			players = newPlayers;
 		});
@@ -178,18 +185,17 @@ public class Gui extends Application {
 			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(heroImages.get(direction)));
 	}
 
-	private static void updateScoreTable(List<Player> playerList)
+	private static void updateScoreTable(List<Player> playerList, int timeLeft)
 	{
-			scoreList.setText(getScoreList(playerList));
-	}
-
-	private static String getScoreList(List<Player> playerList) {
 		StringBuffer b = new StringBuffer(100);
+		b.append("Time left: " + timeLeft + " sekunder\n\n");
 		for (Player p : playerList) {
 			b.append(p+"\r\n");
 		}
-		return b.toString();
+
+		scoreList.setText(b.toString());
 	}
+
 
 	private Image loadImage(String path) {
 		return new Image(getClass().getResourceAsStream(path), TILE_SIZE, TILE_SIZE, false, false);

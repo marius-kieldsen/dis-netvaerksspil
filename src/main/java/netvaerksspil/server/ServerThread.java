@@ -24,6 +24,7 @@ public class ServerThread extends Thread{
 		try {
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
 			playername = inFromClient.readLine();
+			// En ny spiller tilføjes og spillet og timeren genstartes
 			connectedPlayer = GameLogic.makePlayers(playername);
 			System.out.println("Player connected: " + playername);
 
@@ -33,13 +34,23 @@ public class ServerThread extends Thread{
 					GameLogic.updatePlayer(connectedPlayer, Direction.valueOf(input));
 				}
 
-				outToClient.writeBytes(DataFormatter.packData(GameLogic.players));
+				// Udregn hvor meget tid der er tilbage i spillet
+				int secondsPassed = (int) ((System.nanoTime() - GameLogic.timer) / 1_000_000_000);
+				int timeLeft = 20 - secondsPassed;
+
+				outToClient.writeBytes(DataFormatter.packData(GameLogic.players, timeLeft));
 				outToClient.flush();
 
 				if (inFromClient.ready()) {
 					input = inFromClient.readLine();
 				} else {
 					input = "";
+				}
+
+				// Smid spiller af hvis tiden er gået
+				if (timeLeft <= 0) {
+					input = null;
+					connSocket.close();
 				}
 
 				Thread.sleep(4);

@@ -7,9 +7,24 @@ import java.util.HashSet;
 import java.util.List;
 
 public class DataFormatter {
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public int getTimer() {
+        return timeLeft;
+    }
+
+    private List<Player> players;
+    private int timeLeft;
+
+    public DataFormatter(List<Player> players, int timeLeft) {
+        this.players = players;
+        this.timeLeft = timeLeft;
+    }
 
     // Serveren pakker spillets data til en streng (Som bruges til at sende til klienten)
-    public static String packData(List<Player> players) {
+    public static String packData(List<Player> players, int timeLeft) {
         synchronized (GameLogic.class) {
             StringBuilder stringBuilder = new StringBuilder();
             for (Player player : players) {
@@ -21,15 +36,18 @@ public class DataFormatter {
                         .append(player.getDirection()).append("#")
                         .append(claimedTilesString(player.getClaimedTiles())).append(".");
             }
+            stringBuilder.append(";").append(timeLeft);
             stringBuilder.append("\n");
             return stringBuilder.toString();
         }
     }
 
     // Bruges til at pakke data ud som klienten modtager fra serveren.
-    public static List<Player> parseData(String input) {
+    public static DataFormatter parseData(String input) {
+        String[] timerAndPlayers = input.split(";");
+
         List<Player> newPlayers = new ArrayList<>();
-        for (String playerData : input.split("\\.")) {
+        for (String playerData : timerAndPlayers[0].split("\\.")) {
             if (!playerData.isBlank()) {
                 String[] fields = playerData.split("#");
                 String name = fields[0];
@@ -45,7 +63,10 @@ public class DataFormatter {
                 newPlayers.add(player);
             };
         }
-        return newPlayers;
+
+        int timeLeft = Integer.parseInt(timerAndPlayers[1]);
+
+        return new DataFormatter(newPlayers, timeLeft);
     }
 
     private static String claimedTilesString(HashSet<Tile> set) {
@@ -74,4 +95,6 @@ public class DataFormatter {
         }
         return claimedTilesSet;
     }
+
+
 }
