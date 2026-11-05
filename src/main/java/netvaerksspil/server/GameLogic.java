@@ -87,12 +87,13 @@ public class GameLogic {
 		return null;
 	}
 
-	public static List<Player> getPlayers() {
+	public static synchronized List<Player> getPlayers() {
 		return new ArrayList<>(players);
 	}
 
-	public static void removePlayer(Player player) {
+	public static synchronized void removePlayer(Player player) {
 		players.remove(player);
+		freeColors.push(player.getColor());
 	}
 
 }

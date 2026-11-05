@@ -28,7 +28,7 @@ public class Tile {
         return owner;
     }
 
-    public synchronized void setOwner(Player owner) {
+    public void setOwner(Player owner) {
         if (this.owner != owner) {
             Player oldOwner = this.owner;
             if (oldOwner != null) {

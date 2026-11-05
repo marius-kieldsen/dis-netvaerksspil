@@ -3,6 +3,7 @@ package netvaerksspil;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class Player {
 	private final String name;
@@ -19,41 +20,40 @@ public class Player {
 		claimedTiles = new HashSet<>();
 	}
 
-	public synchronized void  claimTile(Tile tile) {
+	public synchronized void claimTile(Tile tile) {
 		if (!claimedTiles.contains(tile)) {
 			claimedTiles.add(tile);
 			tile.setOwner(this);
 		}
 	}
 
-	public void removeTile(Tile tile) {
+	public synchronized void removeTile(Tile tile) {
 		if (claimedTiles.contains(tile)) {
 			claimedTiles.remove(tile);
 			tile.setOwner(null);
 		}
 	}
 
-	public synchronized void  claimOtherPlayersTiles(Player otherplayer) {
+	public void  claimOtherPlayersTiles(Player otherplayer) {
 		for (Tile tile : new ArrayList<>(otherplayer.getClaimedTiles())) {
 			claimTile(tile);
 		}
 	}
 
 	public synchronized void resetClaimedTiles() {
-		for (Tile tile : claimedTiles) {
-			tile.setOwner(null);
-		}
+        for (Tile claimedTile : new HashSet<>(claimedTiles)) {
+            claimedTile.setOwner(null);
+        }
 		claimedTiles.clear();
 	}
 
-	public synchronized HashSet<Tile> getClaimedTiles() {
+	public HashSet<Tile> getClaimedTiles() {
 		return new HashSet<>(claimedTiles);
 	}
 
-	public synchronized void setClaimedTiles(HashSet<Tile> claimedTiles) {
+	public void setClaimedTiles(HashSet<Tile> claimedTiles) {
 		this.claimedTiles = claimedTiles;
 	}
-
 
 	public PlayerColor getColor() {
 		return color;
