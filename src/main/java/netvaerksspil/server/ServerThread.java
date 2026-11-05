@@ -36,7 +36,7 @@ public class ServerThread extends Thread{
 
 				// Udregn hvor meget tid der er tilbage i spillet
 				int secondsPassed = (int) ((System.nanoTime() - GameLogic.timer) / 1_000_000_000);
-				int timeLeft = 20 - secondsPassed;
+				int timeLeft = 90 - secondsPassed;
 
 				outToClient.writeBytes(DataFormatter.packData(GameLogic.players, timeLeft));
 				outToClient.flush();
