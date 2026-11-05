@@ -19,7 +19,7 @@ public class Player {
 		claimedTiles = new HashSet<>();
 	}
 
-	public void claimTile(Tile tile) {
+	public synchronized void  claimTile(Tile tile) {
 		if (!claimedTiles.contains(tile)) {
 			claimedTiles.add(tile);
 			tile.setOwner(this);
@@ -33,24 +33,24 @@ public class Player {
 		}
 	}
 
-	public void claimOtherPlayersTiles(Player otherplayer) {
+	public synchronized void  claimOtherPlayersTiles(Player otherplayer) {
 		for (Tile tile : new ArrayList<>(otherplayer.getClaimedTiles())) {
 			claimTile(tile);
 		}
 	}
 
-	public void resetClaimedTiles() {
+	public synchronized void resetClaimedTiles() {
 		for (Tile tile : claimedTiles) {
 			tile.setOwner(null);
 		}
 		claimedTiles.clear();
 	}
 
-	public HashSet<Tile> getClaimedTiles() {
-		return claimedTiles;
+	public synchronized HashSet<Tile> getClaimedTiles() {
+		return new HashSet<>(claimedTiles);
 	}
 
-	public void setClaimedTiles(HashSet<Tile> claimedTiles) {
+	public synchronized void setClaimedTiles(HashSet<Tile> claimedTiles) {
 		this.claimedTiles = claimedTiles;
 	}
 

@@ -38,7 +38,7 @@ public class ServerThread extends Thread{
 				int secondsPassed = (int) ((System.nanoTime() - GameLogic.timer) / 1_000_000_000);
 				int timeLeft = 90 - secondsPassed;
 
-				outToClient.writeBytes(DataFormatter.packData(GameLogic.players, timeLeft));
+				outToClient.writeBytes(DataFormatter.packData(GameLogic.getPlayers(), timeLeft));
 				outToClient.flush();
 
 				if (inFromClient.ready()) {
@@ -59,7 +59,7 @@ public class ServerThread extends Thread{
 		finally {
 			// Hvis spilleren forlader
 			if (connectedPlayer != null) {
-				GameLogic.players.remove(connectedPlayer);
+				GameLogic.removePlayer(connectedPlayer);
 				GameLogic.freeColors.push(connectedPlayer.getColor());
 				System.out.println("Player left: " + playername);
 			}

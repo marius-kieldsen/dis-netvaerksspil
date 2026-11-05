@@ -5,7 +5,7 @@ import netvaerksspil.*;
 import java.util.*;
 
 public class GameLogic {
-	public static List<Player> players = new ArrayList<>();
+	private static final List<Player> players = new ArrayList<>();
 	private static final Random RANDOM = new Random();
 	public static final Deque<PlayerColor> freeColors = new ArrayDeque<>();
 	public static long timer;
@@ -85,6 +85,14 @@ public class GameLogic {
 			}
 		}
 		return null;
+	}
+
+	public static List<Player> getPlayers() {
+		return new ArrayList<>(players);
+	}
+
+	public static void removePlayer(Player player) {
+		players.remove(player);
 	}
 
 }
