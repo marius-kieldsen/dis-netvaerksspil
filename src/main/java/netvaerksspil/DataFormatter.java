@@ -90,7 +90,7 @@ public class DataFormatter {
                 String[] split2 = s.split("-");
                 int x = Integer.parseInt(split2[0]);
                 int y = Integer.parseInt(split2[1]);
-                claimedTilesSet.add(new Tile(x, y, TileType.FLOOR, player));
+                claimedTilesSet.add(new Tile(x, y, TileType.FLOOR));
             }
         }
         return claimedTilesSet;

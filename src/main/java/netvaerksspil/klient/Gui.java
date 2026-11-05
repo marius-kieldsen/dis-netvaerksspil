@@ -181,7 +181,6 @@ public class Gui extends Application {
 	}
 
 	private static void removePlayerOnScreen(Tile tile) {
-
 			tiles[tile.getX()][tile.getY()].setGraphic(new ImageView(imageFloor));
 	}
 
@@ -203,10 +202,6 @@ public class Gui extends Application {
 
 	private Image loadImage(String path) {
 		return new Image(getClass().getResourceAsStream(path), TILE_SIZE, TILE_SIZE, false, false);
-	}
-
-	private String format(int totalSeconds) {
-		return String.format("%d:%02d", totalSeconds / 60, totalSeconds % 60);
 	}
 }
 

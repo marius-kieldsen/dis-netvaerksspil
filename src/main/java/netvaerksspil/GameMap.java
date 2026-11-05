@@ -41,7 +41,7 @@ public class GameMap {
 					case ' ' -> TileType.FLOOR;
 					default -> throw new IllegalStateException("Ukendt tegn '" + c + "' på " + column + "," + row);
 				};
-				tileMap[column][row] = new Tile(column, row, type, null);
+				tileMap[column][row] = new Tile(column, row, type);
 			}
 		}
 	}

@@ -5,7 +5,7 @@ public class Tile {
     private TileType type;      // WALL, FLOOR
     private Player owner;       // null = ingen spiller har farvet den endnu
 
-    public Tile(int x, int y, TileType type, Player owner) {
+    public Tile(int x, int y, TileType type) {
         this.x = x;
         this.y = y;
         this.type = type;
