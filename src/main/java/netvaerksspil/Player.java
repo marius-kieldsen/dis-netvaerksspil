@@ -39,9 +39,10 @@ public class Player {
 		}
 	}
 
-
-
 	public void resetClaimedTiles() {
+		for (Tile tile : claimedTiles) {
+			tile.setOwner(null);
+		}
 		claimedTiles.clear();
 	}
 

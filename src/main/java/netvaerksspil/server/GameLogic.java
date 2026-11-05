@@ -8,6 +8,7 @@ public class GameLogic {
 	public static List<Player> players = new ArrayList<>();
 	private static final Random RANDOM = new Random();
 	public static final Deque<PlayerColor> freeColors = new ArrayDeque<>();
+	public static long timer;
 
 	static {
 		PlayerColor[] allColors = PlayerColor.values();
@@ -19,12 +20,24 @@ public class GameLogic {
 	public synchronized static Player makePlayers(String name) {
 		if(freeColors.isEmpty()) throw new IllegalStateException("Spillet er fuldt!!!");
 
+		//Genstart spillet når en ny spiller forbinder
+		for (Player player : players) {
+			Tile startPosition = getRandomFreeTile();
+			player.resetClaimedTiles();
+			player.setLocation(startPosition);
+			player.claimTile(startPosition);
+		}
+
+
+		// Tilføj den nye spiller
 		PlayerColor color = freeColors.pop();
 		Tile startPosition = getRandomFreeTile();
 		Player player = new Player(name, color, startPosition, Direction.UP);
 		players.add(player);
 		player.claimTile(startPosition);
 
+		// Start spillets timer
+		timer = System.nanoTime();
 		return player;
 	}
 	

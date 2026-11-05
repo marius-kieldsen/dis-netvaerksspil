@@ -17,12 +17,18 @@ public class InputThread extends Thread {
     }
 
     public void run() {
-        while (true) {
+        boolean getInput = true;
+        while (getInput) {
             try {
                 String input = inFromServer.readLine();
                 if (input != null) {
-                    playersFromServer = DataFormatter.parseData(input);
-                    Gui.renderNew(playersFromServer);
+                    DataFormatter dataFromServer = DataFormatter.parseData(input);
+                    playersFromServer = dataFromServer.getPlayers();
+                    int timeLeft = dataFromServer.getTimer();
+                    Gui.renderNew(playersFromServer, timeLeft);
+                    if (timeLeft <= 0) {
+                        getInput = false;
+                    }
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
