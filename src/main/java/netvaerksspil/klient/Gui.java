@@ -128,9 +128,8 @@ public class Gui extends Application {
 
 			for (Player old : players) {
 				Gui.removePlayerOnScreen(old.getLocation());
-				Gui.resetTiles();
 			}
-
+			Gui.resetTiles();
 			for (Player p : newPlayers) {
 				Gui.placePlayerOnScreen(p.getLocation(), p.getDirection());
 				for (Tile tile : p.getClaimedTiles()) {
